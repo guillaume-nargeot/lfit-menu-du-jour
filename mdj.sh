@@ -34,11 +34,14 @@ done
 # Remove empty lines
 dos2unix -q menu.txt
 sed -i '/^\(""\|\)$/d' menu.txt 
-sed -i s'/\(LUNDI\|MARDI\|MERCREDI\|JEUDI\|VENDREDI\)\([^ ]\)/\1 \2/' menu.txt # fix spacing
+
+# Fix spacing
+sed -i s'/\(LUNDI\|MARDI\|MERCREDI\|JEUDI\|VENDREDI\)\([^ ]\)/\1 \2/' menu.txt
 sed -i s'/  */ /g' menu.txt
 
-# Current date
+# Compute current date in French
 TODAY=`LC_TIME='fr_FR.UTF-8' date '+%A %d' | awk '{print toupper($0)}'`
 
+# Output today's menu
 awk "/$TODAY/,0" menu.txt > menutmp.txt
 head -6 menutmp.txt # temporary solution
