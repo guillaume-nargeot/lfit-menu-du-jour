@@ -12,10 +12,10 @@ wget -q http://www.lfitokyo.org/index.php/menus-cantine -O menus.html
 cat menus.html | tidy -asxhtml -indent - 2> /dev/null | sed s'/&nbsp;/ /g' > menus.xml
 
 # Extract link to the monthly menu PDF file
-PDF_HREF=`xpath menus.xml '//div[@class="box-download"]/a/@href' 2> /dev/null | cut -c8- | sed s'/.$//'`
+PDF_URL=`xpath menus.xml '//div[@class="box-download"]/a/@href' 2> /dev/null | cut -c8- | sed s'/.$//'`
 
 # Download month menu PDF file
-wget -q http://www.lfitokyo.org/$PDF_HREF -O menu.pdf
+wget -q http://www.lfitokyo.org/$PDF_URL -O menu.pdf
 
 # Extract table from the 
 java -jar tabula-1.0.1-jar-with-dependencies.jar -gti -fCSV menu.pdf 2> /dev/null > menu.csv
@@ -44,4 +44,12 @@ TODAY=`LC_TIME='fr_FR.UTF-8' date '+%A %d' | awk '{print toupper($0)}'`
 
 # Output today's menu
 awk "/$TODAY/,0" menu.txt > menutmp.txt
-head -6 menutmp.txt # temporary solution
+MENU=`head -6 menutmp.txt` # temporary solution
+
+curl -s -F "token=$PUSHOVER_KEY" \
+    -F "user=$PUSHOVER_USER" \
+    -F "title=LFIT Menu ($TODAY)" \
+    -F "message=$MENU" \
+    -F "url=$PDF_URL" \
+    -F "url_title=Menus du mois (PDF)" \
+    https://api.pushover.net/1/messages.json
