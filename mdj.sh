@@ -26,7 +26,7 @@ PDF_URL="http://www.lfitokyo.org/$PDF_URL"
 wget -q $PDF_URL -O menu.pdf
 
 # Extract table from the 
-java -jar $TABULA -gti -fCSV menu.pdf 2> /dev/null > menu.csv
+java -Dfile.encoding=utf-8 -jar $TABULA -gti -fCSV menu.pdf 2> /dev/null > menu.csv
 
 # Count columns
 COL_COUNT=`awk -F, '{print NF}' menu.csv | sort -nu | tail -n 1`
