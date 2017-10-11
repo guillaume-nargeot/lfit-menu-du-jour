@@ -26,12 +26,12 @@ PDF_URL="http://www.lfitokyo.org/$PDF_URL"
 LAST_MOD_F=menu.pdf.last_modif_time
 LAST_MOD=$(curl -sI $PDF_URL | grep Last-Modified)
 if [ ! -f $LAST_MOD_F ] || [ "$LAST_MOD" != "$(cat $LAST_MOD_F)" ]; then
-  echo "Downloading file"
+  echo "Downloading monthly menu file"
   wget -q $PDF_URL -O menu.pdf
 fi
 echo $LAST_MOD > $LAST_MOD_F
 
-# Extract table from the 
+# Extract table from PDF menu
 java -Dfile.encoding=utf-8 -jar $TABULA -gti -fCSV menu.pdf 2> /dev/null > menu.csv
 
 # Count columns
@@ -61,7 +61,8 @@ TODAY_UC=$(echo $TODAY | awk '{print toupper($0)}')
 # Output today's menu
 MENU=$(cat menu.txt | \
     sed -n -e "/$TODAY_UC/,/LUNDI\|MARDI\|MERCREDI\|JEUDI\|VENDREDI/p" | \
-    tail -n +2 | head -n -1)
+    tail -n +2 | head -n -1 | \
+    sed 'N;s/\n\([a-z]\)/ \1/g') # fix unwanted line breaks
 
 curl -s -F "token=$PUSHOVER_KEY" \
     -F "user=$PUSHOVER_USER" \
@@ -71,3 +72,6 @@ curl -s -F "token=$PUSHOVER_KEY" \
     -F "url=$PDF_URL" \
     -F "url_title=Menus du mois (PDF)" \
     https://api.pushover.net/1/messages.json
+
+echo ""
+echo "Done"
