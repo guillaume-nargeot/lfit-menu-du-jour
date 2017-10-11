@@ -62,7 +62,7 @@ TODAY_UC=$(echo $TODAY | awk '{print toupper($0)}')
 MENU=$(cat menu.txt | \
     sed -n -e "/$TODAY_UC/,/LUNDI\|MARDI\|MERCREDI\|JEUDI\|VENDREDI/p" | \
     tail -n +2 | head -n -1 | \
-    sed 'N;s/\n\([a-z]\)/ \1/g') # fix unwanted line breaks
+    sed 'N;s/\n\([a-z]\)/ \1/g' | sed s'/- /-/') # fix unwanted line breaks
 
 curl -s -F "token=$PUSHOVER_KEY" \
     -F "user=$PUSHOVER_USER" \
