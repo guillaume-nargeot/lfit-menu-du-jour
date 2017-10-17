@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Retrieve Japan holiday calendar
+YEAR=$(date +"%Y")
+if [[ ! -f "japan-$YEAR-holiday.csv" ]]; then
+    curl -s -G \
+        -d start_year=$YEAR -d end_year=$YEAR \
+        -d id=3 -d start_mon=1 -d end_mon=12 -d year_style=normal \
+        -d month_style=ja -d wday_style=en -d format=csv -d holiday_only=1 \
+        -d zero_padding=1 \
+        -H 'Accept-Encoding: gzip, deflate' --compressed \
+        'http://calendar-service.net/cal' | \
+        tail -n +2 | cut -d, -f1-3 | tr , - > japan-$YEAR-holiday.csv
+fi
+
 # Install dependencies
 TABULA=tabula-1.0.1-jar-with-dependencies.jar
 if [ ! -f tabula-1.0.1-jar-with-dependencies.jar ]; then
