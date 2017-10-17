@@ -13,6 +13,12 @@ if [[ ! -f "japan-$YEAR-holiday.csv" ]]; then
         tail -n +2 | cut -d, -f1-3 | tr , - > japan-$YEAR-holiday.csv
 fi
 
+# Exit if today is a holiday
+if cat japan-$YEAR-holiday.csv | grep $(date --iso) > /dev/null; then
+    echo "Exiting as today is a Japan holiday"
+    exit 0
+fi
+
 # Install dependencies
 TABULA=tabula-1.0.1-jar-with-dependencies.jar
 if [ ! -f tabula-1.0.1-jar-with-dependencies.jar ]; then
