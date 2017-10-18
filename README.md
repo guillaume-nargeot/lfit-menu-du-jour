@@ -1,6 +1,6 @@
 # lfit-menu-du-jour
 
-Extract LFIT today's menu the monthly published PDF menu file and communicate it with Pushover
+Extract LFIT today's menu the monthly published PDF menu file and communicate it with [Pushover](https://pushover.net/)
 
 Usage:
 ```bash
