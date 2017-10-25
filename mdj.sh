@@ -83,6 +83,14 @@ MENU=$(cat menu.txt | \
     tail -n +2 | head -n -1 | \
     sed 'N;s/\n\([a-z]\)/ \1/g' | sed s'/- /-/') # fix unwanted line breaks
 
+# Exit if today's menu is empty
+# (in most cases, it should mean today is a school holiday)
+if [[ -z "$MENU" ]]; then
+    echo "Exiting as today is a school holiday"
+    exit 0
+fi
+
+# Exit if the env vars required for Pushover are not set
 if [[ -z "$PUSHOVER_KEY" ]] || [[ -z "$PUSHOVER_USER" ]]; then
     echo "The following environment variables are not set:"
     echo "- PUSHOVER_KEY"
@@ -90,6 +98,7 @@ if [[ -z "$PUSHOVER_KEY" ]] || [[ -z "$PUSHOVER_USER" ]]; then
     exit 1
 fi
 
+# Send today's menu as a push notification with Pushover
 curl -s -F "token=$PUSHOVER_KEY" \
     -F "user=$PUSHOVER_USER" \
     -F "device=caneton" \
