@@ -83,6 +83,13 @@ MENU=$(cat menu.txt | \
     tail -n +2 | head -n -1 | \
     sed 'N;s/\n\([a-z]\)/ \1/g' | sed s'/- /-/') # fix unwanted line breaks
 
+if [[ -z "$PUSHOVER_KEY" ]] || [[ -z "$PUSHOVER_USER" ]]; then
+    echo "The following environment variables are not set:"
+    echo "- PUSHOVER_KEY"
+    echo "- PUSHOVER_USER"
+    exit 1
+fi
+
 curl -s -F "token=$PUSHOVER_KEY" \
     -F "user=$PUSHOVER_USER" \
     -F "device=caneton" \
