@@ -34,11 +34,9 @@ cat menus.html | tidy -asxhtml -indent - 2> /dev/null | \
     sed s'/&nbsp;/ /g' > menus.xml
 
 # Extract link to the monthly menu PDF file
-#PDF_URL=$(xpath menus.xml '//div[@class="box-download"]/a/@href' 2> /dev/null | \
-    #    cut -c8- | sed s'/.$//')
-# the upper xpath expression doesn't seem to work with xmllint or xmlstarlet...
-PDF_URL=$(cat menus.xml | grep -A2 download | \
-    tail -1 | tr -d ' ' | cut -c2- | sed s'/.$//')
+PDF_URL=$(xmllint \
+    --xpath '//*[contains(@class, "box-download")]/@href' menus.xml | \
+    sed s'/.*"\(.*\)".*/\1/')
 PDF_URL="http://www.lfitokyo.org/$PDF_URL"
 
 # Download month menu PDF file

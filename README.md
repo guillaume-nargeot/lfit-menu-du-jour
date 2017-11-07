@@ -18,6 +18,7 @@ Note: the script expects the following environment variable to be set in order t
 ## Dependencies:
 
 - curl
+- xmllint
 - tabulapdf/tabula-java (automatically downloaded on first run of the command)
 
 ## Implementation details
