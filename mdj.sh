@@ -34,12 +34,13 @@ cat menus.html | tidy -asxhtml -indent - 2> /dev/null | \
     sed s'/&nbsp;/ /g' > menus.xml
 
 # Extract link to the monthly menu PDF file
+
 PDF_URL=$(xmllint \
-    --xpath '//*[contains(@class, "box-download")]/@href' menus.xml | \
+    --xpath '//*[contains(@class, "box-download") or contains(@class, "jcepopup")]/@href' menus.xml | \
     sed s'/.*"\(.*\)".*/\1/')
 PDF_URL="http://www.lfitokyo.org/$PDF_URL"
 
-# Download month menu PDF file
+# Download monthly menu PDF file
 LAST_MOD_F=menu.pdf.last_modif_time
 LAST_MOD=$(curl -sI $PDF_URL | grep Last-Modified)
 if [ ! -f $LAST_MOD_F ] || [ "$LAST_MOD" != "$(cat $LAST_MOD_F)" ]; then
